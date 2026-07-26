@@ -1,12 +1,22 @@
+using ForgeUI.Application.Settings;
 using ForgeUI.Web.Components;
 using ForgeUI.Web.Components.Account;
 using ForgeUI.Web.Data;
+using ForgeUI.Web.Infrastructure.Themes.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
+using Nava.Settings.DependencyInjection;
+using Nava.Settings.Extensions;
+
+const string appSettingsFileName = "app-settings.db";
 
 var builder = WebApplication.CreateBuilder(args);
+
+var appCatalogPath = ResolveAppCatalogPath();
+var appSettingsPath = Path.Combine(appCatalogPath, appSettingsFileName);
+AddStudioSettings(builder.Services, appSettingsPath);
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
@@ -43,7 +53,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+builder.Services.AddSingleton<ThemeProvider>();
+
 var app = builder.Build();
+
+await app.Services.InitializeApplicationSettingsAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -61,6 +75,8 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseAntiforgery();
 
@@ -72,3 +88,17 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();
+
+string ResolveAppCatalogPath()
+{
+    return Environment.GetEnvironmentVariable("APP_PATH")
+           ?? AppContext.BaseDirectory;
+}
+
+void AddStudioSettings(
+    IServiceCollection services,
+    string settingsFilePath)
+{
+    services.AddSettingsWithSqlite(_ => $"Data Source={settingsFilePath}");
+    services.AddRuntimeSettings<ApplicationSettings>();
+}

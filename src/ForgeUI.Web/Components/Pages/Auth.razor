@@ -1,16 +1,130 @@
 ﻿@page "/auth"
+@using System.Security.Claims
 
 @attribute [Authorize]
 
-<PageTitle>Auth</PageTitle>
+<PageTitle>Authentication</PageTitle>
 
 @rendermode InteractiveServer
 
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
-<MudText Typo="Typo.h3" GutterBottom="true">You are authenticated!</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge"
+              Class="py-8">
 
-<AuthorizeView>
-    <MudText Class="mb-4">Hello @context.User.Identity?.Name!</MudText>
-</AuthorizeView>
+    <MudStack Spacing="6">
+
+        <MudStack Spacing="1">
+
+            <MudText Typo="Typo.h3">
+                Authentication
+            </MudText>
+
+            <MudText Typo="Typo.subtitle1"
+                     Color="Color.Secondary">
+                Current authentication status and account information
+            </MudText>
+
+        </MudStack>
+
+        <MudDivider/>
+
+        <MudGrid Spacing="3">
+
+            <MudItem xs="12">
+
+                <MudPaper Class="pa-6"
+                          Elevation="1">
+
+                    <MudStack Spacing="4">
+
+                        <MudStack Row
+                                  AlignItems="AlignItems.Center"
+                                  Spacing="2">
+
+                            <MudIcon Icon="@Icons.Material.Outlined.VerifiedUser"
+                                     Size="Size.Large"
+                                     Color="Color.Success"/>
+
+                            <MudStack Spacing="0">
+
+                                <MudText Typo="Typo.h5">
+                                    You are authenticated
+                                </MudText>
+
+                                <MudText Typo="Typo.body2"
+                                         Color="Color.Secondary">
+                                    Your identity has been successfully verified.
+                                </MudText>
+
+                            </MudStack>
+
+                        </MudStack>
+
+                        <MudDivider/>
+
+                        <AuthorizeView>
+                            <Authorized Context="authContext">
+
+                                <MudStack Spacing="2">
+
+                                    <MudText Typo="Typo.overline"
+                                             Color="Color.Secondary">
+                                        Signed in as
+                                    </MudText>
+
+                                    <MudStack Row
+                                              AlignItems="AlignItems.Center"
+                                              Spacing="2">
+
+                                        <MudAvatar Color="Color.Primary"
+                                                   Size="Size.Medium">
+
+                                            <MudIcon Icon="@Icons.Material.Outlined.Person"/>
+
+                                        </MudAvatar>
+
+                                        <MudStack Spacing="0">
+
+                                            <MudText Typo="Typo.h6">
+                                                @GetDisplayName(authContext.User)
+                                            </MudText>
+
+                                            <MudText Typo="Typo.body2"
+                                                     Color="Color.Secondary">
+                                                Authenticated account
+                                            </MudText>
+
+                                        </MudStack>
+
+                                    </MudStack>
+
+                                </MudStack>
+
+                            </Authorized>
+                        </AuthorizeView>
+
+                    </MudStack>
+
+                </MudPaper>
+
+            </MudItem>
+
+        </MudGrid>
+
+    </MudStack>
+
+</MudContainer>
+
+@code {
+
+    private static string GetDisplayName(
+        ClaimsPrincipal user)
+    {
+        return string.IsNullOrWhiteSpace(user.Identity?.Name)
+            ? "Unknown user"
+            : user.Identity.Name;
+    }
+
+}

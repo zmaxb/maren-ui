@@ -1,7 +1,11 @@
 ﻿@page "/Account/RegisterConfirmation"
 @using System.Text
 @using ForgeUI.Web.Data
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.WebUtilities
+
+@attribute [AllowAnonymous]
+@layout LoginLayout
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IEmailSender<ApplicationUser> EmailSender
@@ -10,24 +14,118 @@
 
 <PageTitle>Register confirmation</PageTitle>
 
-<h1>Register confirmation</h1>
+<MudStack Spacing="4">
 
-<StatusMessage Message="@statusMessage"/>
+    <MudStack Spacing="1"
+              AlignItems="AlignItems.Center">
 
-@if (emailConfirmationLink is not null)
-{
-    <p>
-        This app does not currently have a real email sender registered, see <a
-            class="mud-link mud-primary-text mud-link-underline-hover" href="https://aka.ms/aspaccountconf">these
-            docs</a> for how to configure a real email sender.
-        Normally this would be emailed: <a class="mud-link mud-primary-text mud-link-underline-hover"
-                                           href="@emailConfirmationLink">Click here to confirm your account</a>
-    </p>
-}
-else
-{
-    <p role="alert">Please check your email to confirm your account.</p>
-}
+        <MudAvatar Color="Color.Primary"
+                   Size="Size.Large">
+
+            <MudIcon Icon="@Icons.Material.Outlined.MarkEmailRead"
+                     Size="Size.Large"/>
+
+        </MudAvatar>
+
+        <MudText Typo="Typo.h3"
+                 Align="Align.Center">
+            Confirm your account
+        </MudText>
+
+        <MudText Typo="Typo.body1"
+                 Color="Color.Secondary"
+                 Align="Align.Center">
+            One final step before you can start using Forge UI
+        </MudText>
+
+    </MudStack>
+
+    <StatusMessage Message="@statusMessage"/>
+
+    <MudPaper Class="pa-6"
+              Elevation="1">
+
+        @if (emailConfirmationLink is not null)
+        {
+            <MudStack Spacing="4">
+
+                <MudAlert Severity="Severity.Warning"
+                          Variant="Variant.Outlined">
+
+                    Forge UI does not currently have a real email sender configured.
+                    The confirmation link is shown directly for development purposes.
+
+                </MudAlert>
+
+                <MudStack Spacing="1">
+
+                    <MudText Typo="Typo.h5">
+                        Development confirmation
+                    </MudText>
+
+                    <MudText Typo="Typo.body2"
+                             Color="Color.Secondary">
+                        In a production environment, this link would be delivered by email.
+                    </MudText>
+
+                </MudStack>
+
+                <MudButton Href="@emailConfirmationLink"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           FullWidth
+                           StartIcon="@Icons.Material.Outlined.VerifiedUser">
+                    Confirm account
+                </MudButton>
+
+                <MudLink Href="https://aka.ms/aspaccountconf"
+                         Target="_blank"
+                         Typo="Typo.body2">
+                    Read the email sender configuration documentation
+                </MudLink>
+
+            </MudStack>
+        }
+        else
+        {
+            <MudStack Spacing="4"
+                      AlignItems="AlignItems.Center"
+                      role="alert">
+
+                <MudIcon Icon="@Icons.Material.Outlined.Email"
+                         Size="Size.Large"
+                         Color="Color.Primary"/>
+
+                <MudStack Spacing="1"
+                          AlignItems="AlignItems.Center">
+
+                    <MudText Typo="Typo.h5"
+                             Align="Align.Center">
+                        Check your inbox
+                    </MudText>
+
+                    <MudText Typo="Typo.body2"
+                             Color="Color.Secondary"
+                             Align="Align.Center">
+                        We sent a confirmation link to your email address.
+                    </MudText>
+
+                </MudStack>
+
+                <MudButton Href="Account/Login"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           FullWidth
+                           StartIcon="@Icons.Material.Outlined.Login">
+                    Return to login
+                </MudButton>
+
+            </MudStack>
+        }
+
+    </MudPaper>
+
+</MudStack>
 
 @code {
     private string? emailConfirmationLink;
@@ -47,21 +145,43 @@ else
             return;
         }
 
-        var user = await UserManager.FindByEmailAsync(Email);
+        var user =
+            await UserManager.FindByEmailAsync(Email);
+
         if (user is null)
         {
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            statusMessage = "Error finding user for unspecified email";
+            HttpContext.Response.StatusCode =
+                StatusCodes.Status404NotFound;
+
+            statusMessage =
+                "Error finding user for unspecified email";
+
+            return;
         }
-        else if (EmailSender is IdentityNoOpEmailSender)
+
+        if (EmailSender is IdentityNoOpEmailSender)
         {
-            // Once you add a real email sender, you should remove this code that lets you confirm the account
-            var userId = await UserManager.GetUserIdAsync(user);
-            var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            emailConfirmationLink = NavigationManager.GetUriWithQueryParameters(
-                NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-                new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
+            var userId =
+                await UserManager.GetUserIdAsync(user);
+
+            var code =
+                await UserManager.GenerateEmailConfirmationTokenAsync(user);
+
+            code =
+                WebEncoders.Base64UrlEncode(
+                    Encoding.UTF8.GetBytes(code));
+
+            emailConfirmationLink =
+                NavigationManager.GetUriWithQueryParameters(
+                    NavigationManager
+                        .ToAbsoluteUri("Account/ConfirmEmail")
+                        .AbsoluteUri,
+                    new Dictionary<string, object?>
+                    {
+                        ["userId"] = userId,
+                        ["code"] = code,
+                        ["returnUrl"] = ReturnUrl
+                    });
         }
     }
 

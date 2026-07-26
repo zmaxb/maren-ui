@@ -14,67 +14,161 @@
 
 <PageTitle>Log in</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Log in</MudText>
+<MudStack Spacing="4">
 
-<MudGrid>
-    <MudItem md="6">
-        <StatusMessage Message="@errorMessage"/>
-        <EditForm EditContext="editContext" method="post" OnSubmit="LoginUser" FormName="login">
-            <DataAnnotationsValidator/>
+    <MudStack Spacing="1"
+              AlignItems="AlignItems.Center">
 
-            <MudText GutterBottom="true" Typo="Typo.body1">Use a local account to log in.</MudText>
+        <MudAvatar Color="Color.Primary"
+                   Size="Size.Large">
 
-            <MudGrid>
-                <MudItem md="12">
-                    <MudStaticTextField For="@(() => Input.Email)" @bind-Value="Input.Email"
-                                        Label="Email" Placeholder="name@example.com"
-                                        UserAttributes="@(new Dictionary<string, object?> { { "autocomplete", "username webauthn" }, { "aria-required", "true" } })"/>
-                </MudItem>
-                <MudItem md="12">
-                    <MudStaticTextField For="@(() => Input.Password)" @bind-Value="Input.Password"
-                                        Label="Password" InputType="InputType.Password" Placeholder="password"
-                                        UserAttributes="@(new Dictionary<string, object?> { { "autocomplete", "current-password" }, { "aria-required", "true" } })"/>
-                </MudItem>
-                <MudItem md="12">
-                    <MudStaticCheckBox For="@(() => Input.RememberMe)" @bind-Value="Input.RememberMe">Remember me
+            <MudIcon Icon="@Icons.Material.Outlined.Login"
+                     Size="Size.Large"/>
+
+        </MudAvatar>
+
+        <MudText Typo="Typo.h3"
+                 Align="Align.Center">
+            Welcome back
+        </MudText>
+
+        <MudText Typo="Typo.body1"
+                 Color="Color.Secondary"
+                 Align="Align.Center">
+            Sign in to continue to Forge UI
+        </MudText>
+
+    </MudStack>
+
+    <StatusMessage Message="@errorMessage"/>
+
+    <MudPaper Class="pa-6"
+              Elevation="1">
+
+        <MudStack Spacing="4">
+
+            <MudStack Spacing="1">
+
+                <MudText Typo="Typo.h5">
+                    Log in
+                </MudText>
+
+                <MudText Typo="Typo.body2"
+                         Color="Color.Secondary">
+                    Use your email address and password.
+                </MudText>
+
+            </MudStack>
+
+            <EditForm EditContext="editContext"
+                      method="post"
+                      OnSubmit="LoginUser"
+                      FormName="login">
+
+                <DataAnnotationsValidator/>
+
+                <MudStack Spacing="3">
+
+                    <MudStaticTextField For="@(() => Input.Email)"
+                                        @bind-Value="Input.Email"
+                                        Label="Email"
+                                        Placeholder="name@example.com"
+                                        Variant="Variant.Outlined"
+                                        FullWidth="true"
+                                        Adornment="Adornment.Start"
+                                        AdornmentIcon="@Icons.Material.Outlined.Email"
+                                        UserAttributes="@EmailAttributes"/>
+
+                    <MudStaticTextField For="@(() => Input.Password)"
+                                        @bind-Value="Input.Password"
+                                        Label="Password"
+                                        Placeholder="Enter your password"
+                                        Variant="Variant.Outlined"
+                                        InputType="InputType.Password"
+                                        FullWidth="true"
+                                        Adornment="Adornment.Start"
+                                        AdornmentIcon="@Icons.Material.Outlined.Lock"
+                                        UserAttributes="@PasswordAttributes"/>
+
+                    <MudStaticCheckBox For="@(() => Input.RememberMe)"
+                                       @bind-Value="Input.RememberMe"
+                                       Color="Color.Primary">
+                        Remember me
                     </MudStaticCheckBox>
-                </MudItem>
-                <MudItem md="12">
-                    <MudStaticButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
-                                     FormAction="FormAction.Submit">Log in
+
+                    <MudStaticButton Variant="Variant.Filled"
+                                     Color="Color.Primary"
+                                     FullWidth="true"
+                                     FormAction="FormAction.Submit">
+                        Log in
                     </MudStaticButton>
-                </MudItem>
-                <MudItem md="12">
-                    <PasskeySubmit Operation="PasskeyOperation.Request" Name="Input.Passkey" EmailName="Input.Email"
-                                   class="mud-button-root mud-button mud-button-text mud-button-text-primary mud-button-text-size-medium mud-ripple">
+
+                    <PasskeySubmit Operation="PasskeyOperation.Request"
+                                   Name="Input.Passkey"
+                                   EmailName="Input.Email"
+                                   class="mud-button-root mud-button mud-button-outlined mud-button-outlined-primary mud-button-outlined-size-medium mud-ripple mud-width-full">
                         Log in with a passkey
                     </PasskeySubmit>
-                </MudItem>
-            </MudGrid>
-        </EditForm>
 
-        <MudGrid Class="mt-4">
-            <MudItem md="12">
-                <MudLink Href="Account/ForgotPassword">Forgot your password?</MudLink>
-                <br/>
-                <MudLink
-                    Href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">
-                    Register as a new user
+                </MudStack>
+
+            </EditForm>
+
+            <MudDivider/>
+
+            <MudStack Spacing="2"
+                      AlignItems="AlignItems.Center">
+
+                <MudLink Href="Account/ForgotPassword"
+                         Typo="Typo.body2">
+                    Forgot your password?
                 </MudLink>
-                <br/>
-                <MudLink Href="Account/ResendEmailConfirmation">Resend email confirmation</MudLink>
-            </MudItem>
-        </MudGrid>
-    </MudItem>
-    <MudItem md="6">
-        <MudText GutterBottom="true" Typo="Typo.body1">Use another service to log in.</MudText>
 
-        <ExternalLoginPicker/>
-    </MudItem>
-</MudGrid>
+                <MudLink Href="@RegisterUrl"
+                         Typo="Typo.body2">
+                    Create a new account
+                </MudLink>
+
+                <MudLink Href="Account/ResendEmailConfirmation"
+                         Typo="Typo.body2">
+                    Resend email confirmation
+                </MudLink>
+
+            </MudStack>
+
+        </MudStack>
+
+    </MudPaper>
+
+    @* <MudPaper Class="pa-6" *@
+    @*           Elevation="1"> *@
+    @* *@
+    @*     <MudStack Spacing="3"> *@
+    @* *@
+    @*         <MudStack Spacing="1"> *@
+    @* *@
+    @*             <MudText Typo="Typo.h6"> *@
+    @*                 External providers *@
+    @*             </MudText> *@
+    @* *@
+    @*             <MudText Typo="Typo.body2" *@
+    @*                      Color="Color.Secondary"> *@
+    @*                 Sign in using another authentication service. *@
+    @*             </MudText> *@
+    @* *@
+    @*         </MudStack> *@
+    @* *@
+    @*         <ExternalLoginPicker /> *@
+    @* *@
+    @*     </MudStack> *@
+    @* *@
+    @* </MudPaper> *@
+
+</MudStack>
 
 @code {
     private string? errorMessage;
+
     private EditContext editContext = default!;
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
@@ -83,15 +177,39 @@
 
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
 
+    private static readonly Dictionary<string, object> EmailAttributes =
+        new()
+        {
+            ["autocomplete"] = "username webauthn",
+            ["aria-required"] = "true"
+        };
+
+    private static readonly Dictionary<string, object> PasswordAttributes =
+        new()
+        {
+            ["autocomplete"] = "current-password",
+            ["aria-required"] = "true"
+        };
+
+    private string RegisterUrl =>
+        NavigationManager.GetUriWithQueryParameters(
+            "Account/Register",
+            new Dictionary<string, object?>
+            {
+                ["ReturnUrl"] = ReturnUrl
+            });
+
     protected override async Task OnInitializedAsync()
     {
         Input ??= new InputModel();
-        editContext = new EditContext(Input);
+
+        editContext =
+            new EditContext(Input);
 
         if (HttpMethods.IsGet(HttpContext.Request.Method))
         {
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(
+                IdentityConstants.ExternalScheme);
         }
     }
 
@@ -99,48 +217,66 @@
     {
         if (!string.IsNullOrEmpty(Input.Passkey?.Error))
         {
-            errorMessage = $"Error: {Input.Passkey.Error}";
+            errorMessage =
+                $"Error: {Input.Passkey.Error}";
+
             return;
         }
 
         SignInResult result;
-        if (!string.IsNullOrEmpty(Input.Passkey?.CredentialJson))
+
+        if (!string.IsNullOrEmpty(
+                Input.Passkey?.CredentialJson))
         {
-            // When performing passkey sign-in, don't perform form validation.
-            result = await SignInManager.PasskeySignInAsync(Input.Passkey.CredentialJson);
+            result =
+                await SignInManager.PasskeySignInAsync(
+                    Input.Passkey.CredentialJson);
         }
         else
         {
-            // If doing a password sign-in, validate the form.
             if (!editContext.Validate())
             {
                 return;
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, false);
+            result =
+                await SignInManager.PasswordSignInAsync(
+                    Input.Email,
+                    Input.Password,
+                    Input.RememberMe,
+                    false);
         }
 
         if (result.Succeeded)
         {
-            Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
+            Logger.LogInformation(
+                "User logged in.");
+
+            RedirectManager.RedirectTo(
+                ReturnUrl);
         }
         else if (result.RequiresTwoFactor)
         {
             RedirectManager.RedirectTo(
                 "Account/LoginWith2fa",
-                new Dictionary<string, object?> { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+                new Dictionary<string, object?>
+                {
+                    ["returnUrl"] = ReturnUrl,
+                    ["rememberMe"] = Input.RememberMe
+                });
         }
         else if (result.IsLockedOut)
         {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
+            Logger.LogWarning(
+                "User account locked out.");
+
+            RedirectManager.RedirectTo(
+                "Account/Lockout");
         }
         else
         {
-            errorMessage = "Error: Invalid login attempt.";
+            errorMessage =
+                "Error: Invalid login attempt.";
         }
     }
 

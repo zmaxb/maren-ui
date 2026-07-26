@@ -1,24 +1,109 @@
-﻿@inherits LayoutComponentBase
+﻿@using ForgeUI.Web.Infrastructure.Themes.Providers
+@inherits LayoutComponentBase
 
-<MudThemeProvider/>
+<MudThemeProvider Theme="@_theme"
+                  IsDarkMode="@_isDarkMode"/>
+
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
+
     <MudAppBar Elevation="1">
-        <MudText Typo="Typo.h5" Class="ml-3">
-            Application
-        </MudText>
+
+        <MudStack Row
+                  AlignItems="AlignItems.Center"
+                  Spacing="2">
+
+            <MudIcon Icon="@Icons.Material.Outlined.Construction"
+                     Size="Size.Large"
+                     Color="Color.Primary"/>
+
+            <MudStack Row
+                      Spacing="1"
+                      AlignItems="AlignItems.Center">
+
+                <MudText Typo="Typo.h6">
+                    Forge UI
+                </MudText>
+
+                <MudLink Typo="Typo.overline"
+                         Color="Color.Primary">
+                    Template
+                </MudLink>
+
+            </MudStack>
+
+        </MudStack>
+
     </MudAppBar>
 
     <MudMainContent Class="pt-16 pa-4">
-        @Body
+
+        <MudContainer MaxWidth="MaxWidth.Small"
+                      Class="py-8">
+
+            @Body
+
+        </MudContainer>
+
     </MudMainContent>
+
 </MudLayout>
 
-<div id="blazor-error-ui" data-nosnippet>
+<div id="blazor-error-ui"
+     data-nosnippet>
+
     An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+
+    <a href="."
+       class="reload">
+        Reload
+    </a>
+
+    <span class="dismiss">
+        🗙
+    </span>
+
 </div>
+
+@code {
+    private MudTheme _theme = new();
+
+    private bool _isDarkMode;
+
+    protected override void OnInitialized()
+    {
+        ApplyTheme(
+            SettingsProvider.Settings.Theme);
+    }
+
+    private void ApplyTheme(
+        AppTheme theme)
+    {
+        var definition =
+            ThemeProvider.GetTheme(theme);
+
+        _isDarkMode =
+            definition.MudTheme.IsDarkMode;
+
+        _theme = new MudTheme();
+
+        if (_isDarkMode)
+        {
+            _theme.PaletteDark =
+                (PaletteDark)definition
+                    .MudTheme
+                    .Palette;
+        }
+        else
+        {
+            _theme.PaletteLight =
+                (PaletteLight)definition
+                    .MudTheme
+                    .Palette;
+        }
+    }
+
+}

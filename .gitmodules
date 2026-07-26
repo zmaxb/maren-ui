@@ -1,0 +1,3 @@
+[submodule "deps/Nava.Settings"]
+	path = deps/Nava.Settings
+	url = https://github.com/zmaxb/nava-settings.git

@@ -1,14 +1,78 @@
 ﻿@inherits LayoutComponentBase
 @layout AccountLayout
 
-<MudText Typo="Typo.h3" GutterBottom="true">Manage your account</MudText>
+<MudStack Spacing="6">
 
-<MudGrid>
-    <MudItem md="5">
-        <MudText Typo="Typo.h6" GutterBottom="true">Change your account settings</MudText>
-        <ManageNavMenu/>
-    </MudItem>
-    <MudItem md="7">
-        @Body
-    </MudItem>
-</MudGrid>
+    <MudStack Spacing="1">
+
+        <MudStack Row
+                  AlignItems="AlignItems.Center"
+                  Spacing="2">
+
+            <MudIcon Icon="@Icons.Material.Filled.AccountCircle"
+                     Size="Size.Large"
+                     Color="Color.Primary"/>
+
+            <MudText Typo="Typo.h3">
+                Manage your account
+            </MudText>
+
+        </MudStack>
+
+        <MudText Typo="Typo.subtitle1"
+                 Color="Color.Secondary">
+            Update your profile, security settings and sign-in methods
+        </MudText>
+
+    </MudStack>
+
+    <MudDivider/>
+
+    <MudGrid Spacing="4">
+
+        <MudItem xs="12"
+                 md="4">
+
+            <MudPaper Class="pa-4"
+                      Elevation="1">
+
+                <MudStack Spacing="3">
+
+                    <MudStack Spacing="1">
+
+                        <MudText Typo="Typo.h6">
+                            Account settings
+                        </MudText>
+
+                        <MudText Typo="Typo.body2"
+                                 Color="Color.Secondary">
+                            Select a section to manage.
+                        </MudText>
+
+                    </MudStack>
+
+                    <MudDivider/>
+
+                    <ManageNavMenu/>
+
+                </MudStack>
+
+            </MudPaper>
+
+        </MudItem>
+
+        <MudItem xs="12"
+                 md="8">
+
+            <MudPaper Class="pa-6"
+                      Elevation="1">
+
+                @Body
+
+            </MudPaper>
+
+        </MudItem>
+
+    </MudGrid>
+
+</MudStack>

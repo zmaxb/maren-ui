@@ -1,17 +1,27 @@
 @using Microsoft.AspNetCore.Antiforgery
 @inject IServiceProvider Services
 
-<button type="submit" name="__passkeySubmit" @attributes="AdditionalAttributes">@ChildContent</button>
+<MudButton ButtonType="ButtonType.Submit"
+           Variant="Variant.Outlined"
+           Color="Color.Primary"
+           StartIcon="@Icons.Material.Outlined.Fingerprint"
+           @attributes="AdditionalAttributes"
+           name="__passkeySubmit">
+
+    @ChildContent
+
+</MudButton>
+
 <passkey-submit
     operation="@Operation"
     name="@Name"
     email-name="@EmailName"
-    request-token-name="@tokens?.HeaderName"
-    request-token-value="@tokens?.RequestToken">
+    request-token-name="@_tokens?.HeaderName"
+    request-token-value="@_tokens?.RequestToken">
 </passkey-submit>
 
 @code {
-    private AntiforgeryTokenSet? tokens;
+    private AntiforgeryTokenSet? _tokens;
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
@@ -28,7 +38,9 @@
 
     protected override void OnInitialized()
     {
-        tokens = Services.GetService<IAntiforgery>()?.GetTokens(HttpContext);
+        _tokens = Services
+            .GetService<IAntiforgery>()
+            ?.GetTokens(HttpContext);
     }
 
 }

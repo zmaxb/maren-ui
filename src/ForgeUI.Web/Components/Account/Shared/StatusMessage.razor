@@ -1,24 +1,30 @@
 ﻿@if (!string.IsNullOrEmpty(DisplayMessage))
 {
-    var severity = DisplayMessage.StartsWith("Error") ? Severity.Error : Severity.Success;
+    var severity = DisplayMessage.StartsWith("Error")
+        ? Severity.Error
+        : Severity.Success;
 
-    <MudAlert Variant="Variant.Outlined" Severity="@severity">@DisplayMessage</MudAlert>
+    <MudAlert Variant="Variant.Outlined"
+              Severity="@severity"
+              Class="my-3">
+        @DisplayMessage
+    </MudAlert>
 }
 
 @code {
-    private string? messageFromCookie;
+    private string? _messageFromCookie;
 
     [Parameter] public string? Message { get; set; }
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
-    private string? DisplayMessage => Message ?? messageFromCookie;
+    private string? DisplayMessage => Message ?? _messageFromCookie;
 
     protected override void OnInitialized()
     {
-        messageFromCookie = HttpContext.Request.Cookies[IdentityRedirectManager.StatusCookieName];
+        _messageFromCookie = HttpContext.Request.Cookies[IdentityRedirectManager.StatusCookieName];
 
-        if (messageFromCookie is not null)
+        if (_messageFromCookie is not null)
         {
             HttpContext.Response.Cookies.Delete(IdentityRedirectManager.StatusCookieName);
         }

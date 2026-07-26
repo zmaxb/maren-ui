@@ -47,19 +47,29 @@ else
     <MudText Typo="Typo.body1">No passkeys are registered.</MudText>
 }
 
-<form @formname="add-passkey" @onsubmit="AddPasskey" method="post">
+<form @formname="add-passkey"
+      @onsubmit="AddPasskey"
+      method="post"
+      class="mt-3">
+
     <AntiforgeryToken/>
+
     @if (currentPasskeys is { Count: >= MaxPasskeyCount })
     {
-        <MudText Typo="Typo.body2" Color="Color.Error">You have reached the maximum number of allowed passkeys. Please
-            delete one before adding a new one.
+        <MudText Typo="Typo.body2"
+                 Color="Color.Error">
+            You have reached the maximum number of allowed passkeys.
+            Please delete one before adding a new one.
         </MudText>
     }
     else
     {
-        <PasskeySubmit Operation="PasskeyOperation.Create" Name="Input" class="btn btn-primary">Add a new passkey
+        <PasskeySubmit Operation="PasskeyOperation.Create"
+                       Name="Input">
+            Add a new passkey
         </PasskeySubmit>
     }
+
 </form>
 
 @code {
