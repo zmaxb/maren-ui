@@ -5,13 +5,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\deps\Nava.Settings\src\Nava.Settings\Nava.Settings.csproj"/>
-    </ItemGroup>
-
+    
     <ItemGroup>
         <PackageReference Update="Nerdbank.GitVersioning" Version="3.10.91"/>
+        <PackageReference Include="Nava.Settings" Version="0.2.0" />
     </ItemGroup>
 
 </Project>
