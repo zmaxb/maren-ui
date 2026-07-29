@@ -1,10 +1,26 @@
 # 🛠️ Maren UI
 
-![.NET](https://img.shields.io/badge/.NET-10.0-blue?logo=dotnet&logoColor=white)
-![Blazor](https://img.shields.io/badge/Blazor-Web%20App-purple?logo=blazor)
-![MudBlazor](https://img.shields.io/badge/UI-MudBlazor-594AE2)
-
----
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <img
+          src="https://img.shields.io/badge/.NET-10.0-blue?logo=dotnet&amp;logoColor=white"
+          alt=".NET 10.0">
+      </td>
+      <td>
+        <img
+          src="https://img.shields.io/badge/Blazor-Web%20App-purple?logo=blazor"
+          alt="Blazor Web App">
+      </td>
+      <td>
+        <img
+          src="https://img.shields.io/badge/UI-MudBlazor-594AE2"
+          alt="MudBlazor">
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 A modern ASP.NET Core application template built with Blazor and MudBlazor.
 
@@ -65,21 +81,28 @@ their account.
 
 The template includes ASP.NET Core Identity with styled authentication and account management pages.
 
-<p align="center">
-  <a href="docs/images/maren-ui-login.png">
-    <img
-      src="docs/images/maren-ui-login.png"
-      alt="Maren UI login page"
-      width="49%">
-  </a>
-
-  <a href="docs/images/maren-ui-account.png">
-    <img
-      src="docs/images/maren-ui-account.png"
-      alt="Maren UI account management page"
-      width="49%">
-  </a>
-</p>
+<table>
+  <tbody>
+    <tr>
+      <td width="50%">
+        <a href="docs/images/maren-ui-login.png">
+          <img
+            src="docs/images/maren-ui-login.png"
+            alt="Maren UI login page"
+            width="100%">
+        </a>
+      </td>
+      <td width="50%">
+        <a href="docs/images/maren-ui-account.png">
+          <img
+            src="docs/images/maren-ui-account.png"
+            alt="Maren UI account management page"
+            width="100%">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ---
 

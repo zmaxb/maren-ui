@@ -70,7 +70,10 @@
         _isDarkMode =
             definition.MudTheme.IsDarkMode;
 
-        _theme = new MudTheme();
+        _theme = new MudTheme
+        {
+            Shadows = definition.MudTheme.Shadows
+        };
 
         if (_isDarkMode)
         {

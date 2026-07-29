@@ -14,9 +14,19 @@
     <MudStack Spacing="6">
 
         <MudStack Spacing="1">
-            <MudText Typo="Typo.h3">
-                Settings
-            </MudText>
+            <MudStack Row
+                      AlignItems="AlignItems.Center"
+                      Spacing="2">
+
+                <MudIcon Icon="@Icons.Material.Filled.Settings"
+                         Size="Size.Large"
+                         Color="Color.Primary"/>
+
+                <MudText Typo="Typo.h3">
+                    Settings
+                </MudText>
+
+            </MudStack>
 
             <MudText Typo="Typo.subtitle1"
                      Color="Color.Secondary">
@@ -129,11 +139,17 @@
                                 <MudTable T="UserAdministrationItem"
                                           Items="@_users"
                                           Hover
+                                          Striped
                                           Bordered>
 
                                     <HeaderContent>
-                                        <MudTh>User</MudTh>
-                                        <MudTh>Administrator</MudTh>
+                                        <MudTh
+                                            Class="mud-theme-secondary border-r border-solid mud-border-lines-default">
+                                            User
+                                        </MudTh>
+                                        <MudTh Class="mud-theme-secondary">
+                                            Administrator
+                                        </MudTh>
                                     </HeaderContent>
 
                                     <RowTemplate>

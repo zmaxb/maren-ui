@@ -31,16 +31,16 @@ public static class SlateTheme
                 Secondary = "#4B5D73",
                 SecondaryContrastText = "#FFFFFF",
 
-                Info = "#6D95B3",
+                Info = "#6E8FA6",
                 InfoContrastText = "#0C0E10",
 
-                Success = "#6F9D82",
+                Success = "#72917E",
                 SuccessContrastText = "#0C0E10",
 
-                Warning = "#C0A064",
+                Warning = "#AE9564",
                 WarningContrastText = "#0C0E10",
 
-                Error = "#B96672",
+                Error = "#AA6870",
                 ErrorContrastText = "#0C0E10",
 
                 Dark = "#0C0E10",
