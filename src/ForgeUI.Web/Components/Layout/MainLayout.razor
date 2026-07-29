@@ -1,9 +1,6 @@
 ﻿@inherits LayoutComponentBase
-@using ForgeUI.Web.Infrastructure.Themes.Providers
-@implements IDisposable
 
-<MudThemeProvider Theme="@_theme"
-                  IsDarkMode="@IsDarkMode"/>
+<AppThemeProvider/>
 
 <MudPopoverProvider/>
 <MudDialogProvider/>
@@ -45,6 +42,7 @@
 
     <MudDrawer id="nav-drawer"
                Variant="DrawerVariant.Mini"
+               Breakpoint="Breakpoint.None"
                ClipMode="DrawerClipMode.Always"
                Elevation="2">
 
@@ -62,62 +60,3 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
-
-@code{
-
-    private MudTheme? _theme;
-
-    private bool IsDarkMode { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        await ApplyTheme(SettingsProvider.Settings.Theme);
-
-        SettingsProvider.SettingsChanged +=
-            OnSettingsChanged;
-    }
-
-    public void Dispose()
-    {
-        SettingsProvider.SettingsChanged -=
-            OnSettingsChanged;
-    }
-
-    private async Task OnSettingsChanged(
-        ApplicationSettings settings)
-    {
-        await ApplyTheme(settings.Theme);
-    }
-
-    private async Task ApplyTheme(
-        AppTheme theme)
-    {
-        var definition =
-            ThemeProvider.GetTheme(theme);
-
-        IsDarkMode =
-            definition.MudTheme.IsDarkMode;
-
-        _theme = new MudTheme();
-
-        if (IsDarkMode)
-        {
-            _theme.PaletteDark =
-                (PaletteDark)definition
-                    .MudTheme
-                    .Palette;
-        }
-        else
-        {
-            _theme.PaletteLight =
-                (PaletteLight)definition
-                    .MudTheme
-                    .Palette;
-        }
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-}

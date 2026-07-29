@@ -28,11 +28,6 @@
 
 
     <ItemGroup>
-        <Folder Include="Infrastructure\"/>
-    </ItemGroup>
-
-
-    <ItemGroup>
         <ProjectReference Include="..\ForgeUI.Application\ForgeUI.Application.csproj"/>
     </ItemGroup>
 

@@ -112,3 +112,17 @@ dotnet run
 ```
 
 Open the application in your browser and select **Create a new account**.
+
+To bootstrap the first administrator, set the email of an existing account
+and restart the application:
+
+```bash
+dotnet user-secrets set \
+  "Authorization:BootstrapAdminEmail" \
+  "admin@example.com" \
+  --project src/ForgeUI.Web
+```
+
+After the first administrator is assigned, administrator access can be managed
+on the global settings page. The bootstrap setting is ignored while at least
+one administrator exists.

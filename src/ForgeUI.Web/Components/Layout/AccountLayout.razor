@@ -1,8 +1,6 @@
-﻿@using ForgeUI.Web.Infrastructure.Themes.Providers
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
-<MudThemeProvider Theme="@_theme"
-                  IsDarkMode="@_isDarkMode"/>
+<AppThemeProvider/>
 
 <MudPopoverProvider/>
 <MudDialogProvider/>
@@ -64,42 +62,3 @@
     </span>
 
 </div>
-
-@code {
-    private MudTheme _theme = new();
-
-    private bool _isDarkMode;
-
-    protected override void OnInitialized()
-    {
-        ApplyTheme(SettingsProvider.Settings.Theme);
-    }
-
-    private void ApplyTheme(
-        AppTheme theme)
-    {
-        var definition =
-            ThemeProvider.GetTheme(theme);
-
-        _isDarkMode =
-            definition.MudTheme.IsDarkMode;
-
-        _theme = new MudTheme();
-
-        if (_isDarkMode)
-        {
-            _theme.PaletteDark =
-                (PaletteDark)definition
-                    .MudTheme
-                    .Palette;
-        }
-        else
-        {
-            _theme.PaletteLight =
-                (PaletteLight)definition
-                    .MudTheme
-                    .Palette;
-        }
-    }
-
-}

@@ -1,4 +1,5 @@
-﻿@implements IDisposable
+﻿@using ForgeUI.Web.Infrastructure.Authorization
+@implements IDisposable
 @inject NavigationManager NavigationManager
 
 <div style="
@@ -63,18 +64,22 @@
 
         </MudTooltip>
 
-        <MudTooltip Text="Settings"
-                    Placement="Placement.Right"
-                    Arrow="true">
+        <AuthorizeView Policy="@AppPolicies.ManageGlobalSettings">
+            <Authorized>
+                <MudTooltip Text="Settings"
+                            Placement="Placement.Right"
+                            Arrow="true">
 
-            <MudIconButton
-                Icon="@Icons.Material.Filled.Settings"
-                Href="/settings"
-                Color="@GetRouteColor("settings")"
-                Size="Size.Medium"
-                Variant="Variant.Text"/>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Settings"
+                        Href="/settings"
+                        Color="@GetRouteColor("settings")"
+                        Size="Size.Medium"
+                        Variant="Variant.Text"/>
 
-        </MudTooltip>
+                </MudTooltip>
+            </Authorized>
+        </AuthorizeView>
 
         <MudDivider Style="width: 100%; margin-bottom: 4px;"/>
 

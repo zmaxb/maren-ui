@@ -1,4 +1,9 @@
 @page "/Settings"
+@using ForgeUI.Web.Infrastructure.Authorization
+@attribute [Authorize(Policy = AppPolicies.ManageGlobalSettings)]
+@inject UserAdministrationService UserAdministrationService
+@inject ISnackbar Snackbar
+@inject ILogger<Settings> Logger
 
 <PageTitle>Settings</PageTitle>
 
@@ -70,13 +75,12 @@
                         </MudStack>
 
                     </MudPaper>
-                </MudItem>
 
-                <MudItem xs="12">
                     <MudStack Row
                               Wrap="Wrap.Wrap"
                               Justify="Justify.FlexEnd"
-                              Spacing="2">
+                              Spacing="2"
+                              Class="mt-3">
 
                         <MudButton Variant="Variant.Filled"
                                    Color="Color.Primary"
@@ -86,6 +90,97 @@
                         </MudButton>
 
                     </MudStack>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudPaper Class="pa-6"
+                              Elevation="1">
+
+                        <MudStack Spacing="4">
+
+                            <MudStack Row
+                                      AlignItems="AlignItems.Center"
+                                      Spacing="1">
+
+                                <MudIcon Icon="@Icons.Material.Outlined.AdminPanelSettings"
+                                         Size="Size.Small"
+                                         Color="Color.Primary"/>
+
+                                <MudText Typo="Typo.h5">
+                                    Administrators
+                                </MudText>
+
+                            </MudStack>
+
+                            <MudText Typo="Typo.body2"
+                                     Color="Color.Secondary">
+                                Administrators can change global application settings
+                                and manage administrator access.
+                            </MudText>
+
+                            @if (_loadingUsers)
+                            {
+                                <MudProgressLinear Indeterminate
+                                                   Color="Color.Primary"/>
+                            }
+                            else
+                            {
+                                <MudTable T="UserAdministrationItem"
+                                          Items="@_users"
+                                          Hover
+                                          Bordered>
+
+                                    <HeaderContent>
+                                        <MudTh>User</MudTh>
+                                        <MudTh>Administrator</MudTh>
+                                    </HeaderContent>
+
+                                    <RowTemplate>
+                                        <MudTd DataLabel="User">
+                                            <MudStack Row
+                                                      AlignItems="AlignItems.Center"
+                                                      Spacing="1">
+
+                                                <MudText Typo="Typo.body2">
+                                                    @context.DisplayName
+                                                </MudText>
+
+                                                @if (context.IsCurrentUser)
+                                                {
+                                                    <MudChip T="string"
+                                                             Size="Size.Small"
+                                                             Color="Color.Info"
+                                                             Variant="Variant.Outlined">
+                                                        You
+                                                    </MudChip>
+                                                }
+
+                                            </MudStack>
+                                        </MudTd>
+
+                                        <MudTd DataLabel="Administrator">
+                                            <MudSwitch T="bool"
+                                                       Value="@context.IsAdmin"
+                                                       ValueChanged="@(value => SetAdminAsync(context, value))"
+                                                       Disabled="@(_updatingUserId is not null || context.IsCurrentUser)"
+                                                       Color="Color.Primary"
+                                                       aria-label="@($"Administrator access for {context.DisplayName}")"/>
+                                        </MudTd>
+                                    </RowTemplate>
+
+                                    <NoRecordsContent>
+                                        <MudText Typo="Typo.body2"
+                                                 Color="Color.Secondary">
+                                            No users found.
+                                        </MudText>
+                                    </NoRecordsContent>
+
+                                </MudTable>
+                            }
+
+                        </MudStack>
+
+                    </MudPaper>
                 </MudItem>
 
             </MudGrid>
@@ -102,12 +197,14 @@
 
     private ApplicationSettings _settings = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _settings = new ApplicationSettings
         {
             Theme = SettingsProvider.Settings.Theme
         };
+
+        await LoadUsersAsync();
     }
 
     private async Task SaveAsync()
@@ -118,5 +215,76 @@
         }
 
         await SettingsProvider.UpdateAsync(_settings);
+    }
+
+    private IReadOnlyList<UserAdministrationItem> _users =
+        [];
+
+    private bool _loadingUsers;
+    private string? _updatingUserId;
+
+    private async Task LoadUsersAsync()
+    {
+        try
+        {
+            _loadingUsers = true;
+            _users =
+                await UserAdministrationService
+                    .GetUsersAsync();
+        }
+        finally
+        {
+            _loadingUsers = false;
+        }
+    }
+
+    private async Task SetAdminAsync(
+        UserAdministrationItem user,
+        bool isAdmin)
+    {
+        try
+        {
+            _updatingUserId = user.Id;
+
+            var result =
+                await UserAdministrationService.SetAdminAsync(
+                    user.Id,
+                    isAdmin);
+
+            if (result.Succeeded)
+            {
+                Snackbar.Add(
+                    (isAdmin
+                        ? $"{user.DisplayName} is now an administrator. "
+                        : $"{user.DisplayName} is no longer an administrator. ")
+                    + "The change takes effect after the user's next sign-in.",
+                    Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add(
+                    string.Join(
+                        " ",
+                        result.Errors.Select(error => error.Description)),
+                    Severity.Error);
+            }
+
+            await LoadUsersAsync();
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(
+                exception,
+                "Unable to update administrator access for {UserId}.",
+                user.Id);
+
+            Snackbar.Add(
+                "Unable to update administrator access.",
+                Severity.Error);
+        }
+        finally
+        {
+            _updatingUserId = null;
+        }
     }
 }

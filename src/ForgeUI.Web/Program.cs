@@ -1,7 +1,10 @@
+using ForgeUI.Application;
 using ForgeUI.Application.Settings;
 using ForgeUI.Web.Components;
 using ForgeUI.Web.Components.Account;
 using ForgeUI.Web.Data;
+using ForgeUI.Web.Infrastructure;
+using ForgeUI.Web.Infrastructure.Authorization;
 using ForgeUI.Web.Infrastructure.Themes.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var appCatalogPath = ResolveAppCatalogPath();
 var appSettingsPath = Path.Combine(appCatalogPath, appSettingsFileName);
-AddStudioSettings(builder.Services, appSettingsPath);
+AddSettings(builder.Services, appSettingsPath);
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
@@ -47,17 +50,29 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
         options.SignIn.RequireConfirmedAccount = false;
         options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
     })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(
+        AppPolicies.ManageGlobalSettings,
+        policy => policy.RequireRole(AppRoles.Admin));
+
 builder.Services.AddSingleton<ThemeProvider>();
+
+builder.Services.AddScoped<CurrentUserAccessor>();
+builder.Services.AddScoped<IUserSettingsProvider, UserSettingsProvider>();
+builder.Services.AddScoped<UserAdministrationService>();
 
 var app = builder.Build();
 
 await app.Services.InitializeApplicationSettingsAsync();
+await app.Services.InitializeAdminRoleAsync(
+    builder.Configuration);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -95,10 +110,11 @@ string ResolveAppCatalogPath()
            ?? AppContext.BaseDirectory;
 }
 
-void AddStudioSettings(
+void AddSettings(
     IServiceCollection services,
     string settingsFilePath)
 {
     services.AddSettingsWithSqlite(_ => $"Data Source={settingsFilePath}");
     services.AddRuntimeSettings<ApplicationSettings>();
+    services.AddScopedSettings<UserSettings>();
 }
