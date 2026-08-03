@@ -6,7 +6,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Rename passkey</PageTitle>
+<AppPageTitle Title="Rename passkey" />
 
 <EditForm Model="Input" OnValidSubmit="Rename" FormName="rename-passkey" method="post">
     <DataAnnotationsValidator/>
